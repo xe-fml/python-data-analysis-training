@@ -1669,27 +1669,23 @@ def first_touch_attribution(df: pd.DataFrame):
         initialCode: `# ========== 营销归因分析练习 ==========
 # 任务：按渠道统计 ROI 与归因收入占比
 
-channels = [
-    {"name": "搜索引擎", "cost": 5000, "revenue": 25000, "users": 300},
-    {"name": "社交媒体", "cost": 3000, "revenue": 18000, "users": 250},
-    {"name": "邮件营销", "cost": 1500, "revenue": 9000, "users": 120},
-    {"name": "展示广告", "cost": 4000, "revenue": 12000, "users": 180},
-]
+# TODO: 构造 4 个渠道数据，每条包含 name / cost / revenue / users
+channels = []
 
-total_revenue = sum(c["revenue"] for c in channels)
-total_cost = sum(c["cost"] for c in channels)
+# TODO: 用 sum() 计算总 revenue 和 总 cost
+total_revenue = None
+total_cost = None
 
-best_channel = max(channels, key=lambda c: (c["revenue"] - c["cost"]) / c["cost"])
+# TODO: 用 max() + lambda key 找最佳 ROI 渠道
+best_channel = None
 
+# TODO: 遍历渠道，计算每个 ROI = (revenue - cost) / cost * 100
+#       计算每个收入占比 = revenue / total_revenue * 100
+#       打印每个渠道名/成本/收入/ROI/占比
 print("=== 营销渠道归因分析报告 ===")
-for c in channels:
-    roi = (c["revenue"] - c["cost"]) / c["cost"] * 100
-    share = c["revenue"] / total_revenue * 100
-    print(f'{c["name"]}: 成本=\${c["cost"]} 收入=\${c["revenue"]} ROI={roi:.1f}% 占比={share:.1f}%')
 
-overall_roi = (total_revenue - total_cost) / total_cost * 100
-print(f"\n总成本: \${total_cost} / 总收入: \${total_revenue} / 整体 ROI: {overall_roi:.1f}%")
-print(f'最佳 ROI 渠道: {best_channel["name"]}')
+# TODO: 打印总成本、总收入、整体 ROI 和最佳渠道名称
+print(f"整体 ROI: {None}")
 `,
         expectedOutput: 'ROI',
         hint: "解题思路：用列表存储各渠道成本、收入和用户数，计算 ROI 和占比，用 max 找出最高 ROI 渠道并打印分析报告。"
@@ -1950,39 +1946,30 @@ def calculate_reorder_point(
         initialCode: `# ========== 库存管理分析练习 ==========
 # 任务：计算库存周转率、周转天数、滞销识别，按销售额降序做 ABC 分类
 
-items = [
-    {"name": "商品A", "cogs": 50000, "avg_inventory": 5000, "sales": 80000},
-    {"name": "商品B", "cogs": 30000, "avg_inventory": 15000, "sales": 45000},
-    {"name": "商品C", "cogs": 15000, "avg_inventory": 3000, "sales": 22000},
-    {"name": "商品D", "cogs": 8000, "avg_inventory": 4000, "sales": 12000},
-    {"name": "商品E", "cogs": 5000, "avg_inventory": 2000, "sales": 8000},
-]
+# TODO: 构造 5 个商品数据，每条包含 name / cogs (已售成本) / avg_inventory / sales
+items = []
 
-# 1) 计算周转率 / 周转天数
+# TODO: 用 for 循环为每个商品添加：
+#       turnover_rate = cogs / avg_inventory
+#       days_inventory = 365 / turnover_rate
+#       is_slow = days_inventory > 90
 for it in items:
-    it["turnover_rate"] = it["cogs"] / it["avg_inventory"]
-    it["days_inventory"] = 365 / it["turnover_rate"]
-    it["is_slow"] = it["days_inventory"] > 90
+    pass
 
-# 2) 按销售额降序
-items_sorted = sorted(items, key=lambda x: x["sales"], reverse=True)
-total_sales = sum(it["sales"] for it in items_sorted)
+# TODO: 用 sorted() 按 sales 降序排序
+items_sorted = []
+# TODO: 总销售额
+total_sales = None
 
-# 3) ABC 分类
+# TODO: 用 for 循环做 ABC 分类：
+#       running_sum 累加当前商品 sales，running_pct = running / total_sales
+#       running_pct <= 80 -> "A"，<=95 -> "B"，其他 -> "C"
 running = 0
 for it in items_sorted:
-    running += it["sales"]
-    pct = running / total_sales * 100
-    it["abc"] = "A" if pct <= 80 else ("B" if pct <= 95 else "C")
+    pass
 
+# TODO: 打印报告（商品名 / 销售额 / 周转率 / 周转天数 / ABC / 是否滞销
 print("=== 库存管理分析报告 ===")
-print(f"{'商品':<6} {'销售额':>8} {'周转率':>8} {'周转天数':>9} {'ABC':>4} {'滞销':>4}")
-for it in items_sorted:
-    slow = "是" if it["is_slow"] else "否"
-    print(f'{it["name"]:<6} \${it["sales"]:>8,} {it["turnover_rate"]:>8.2f} {it["days_inventory"]:>8.1f}天 {it["abc"]:>4} {slow:>4}')
-
-slow_items = [it["name"] for it in items_sorted if it["is_slow"]]
-print(f"\n建议优先清库存的商品: {', '.join(slow_items) if slow_items else '无'}")
 `,
         expectedOutput: 'ABC',
         hint: "解题思路：用列表存储商品数据，计算周转率和周转天数，按销售额降序排序后累加占比做 ABC 分类，最后打印报告。"
@@ -2253,44 +2240,25 @@ def simple_sentiment_analysis(df: pd.DataFrame, text_column: str):
         initialCode: `# ========== 客户满意度分析练习 ==========
 # 任务：计算 NPS、CSAT，并统计正面关键词频次
 
-reviews = [
-    {"rating": 9, "text": "great product love it excellent quality"},
-    {"rating": 10, "text": "amazing service highly recommend"},
-    {"rating": 8, "text": "good overall but slow delivery"},
-    {"rating": 6, "text": "average product nothing special"},
-    {"rating": 7, "text": "nice product works fine"},
-    {"rating": 9, "text": "love it best purchase ever"},
-    {"rating": 5, "text": "poor quality disappointed"},
-    {"rating": 10, "text": "amazing highly recommend great service"},
-    {"rating": 8, "text": "good value for money"},
-    {"rating": 4, "text": "bad experience wont buy again"},
-]
+# TODO: 构造 10 条评论，每条包含 rating(1-10) 和 text
+reviews = []
 
-# NPS
-promoters = sum(1 for r in reviews if r["rating"] >= 9)
-detractors = sum(1 for r in reviews if r["rating"] <= 6)
-nps = (promoters - detractors) / len(reviews) * 100
+# TODO: NPS = (推荐者数 - 贬损者数) / 总样本数 * 100
+#       推荐者: rating >= 9，贬损者: rating <= 6
+promoters = None
+detractors = None
+nps = None
 
-# CSAT (rating >= 7)
-csat = sum(1 for r in reviews if r["rating"] >= 7) / len(reviews) * 100
+# TODO: CSAT = rating >= 7 的评论占比 * 100
+csat = None
 
-# 正面关键词
-positive_words = {"good", "great", "excellent", "love", "nice", "amazing", "recommend"}
+# TODO: 定义正面关键词集合
+positive_words = set()
+# TODO: 统计每个正面关键词在所有评论文本中出现次数
 keyword_count = {}
-for r in reviews:
-    for w in r["text"].lower().split():
-        if w in positive_words:
-            keyword_count[w] = keyword_count.get(w, 0) + 1
 
+# TODO: 打印报告：样本数 / 推荐者数 / 贬损者数 / NPS / CSAT / 关键词统计
 print("=== 客户满意度分析报告 ===")
-print(f"样本数: {len(reviews)}")
-print(f"推荐者 (>=9分): {promoters} 人")
-print(f"贬损者 (<=6分): {detractors} 人")
-print(f"NPS Score: {nps:.1f}")
-print(f"CSAT (>=7分满意度): {csat:.1f}%")
-print("\n--- 正面关键词统计 ---")
-for w, cnt in sorted(keyword_count.items(), key=lambda x: -x[1]):
-    print(f"{w}: {cnt} 次")
 `,
         expectedOutput: 'NPS',
         hint: "解题思路：用列表存储评分+评论字典，用 sum 统计推荐者/贬损者计算 NPS，用评分>=7 计算 CSAT，最后打印报告。"
@@ -2565,32 +2533,21 @@ def competitor_comparison(competitor_data: pd.DataFrame):
         initialCode: `# ========== 竞品分析练习 ==========
 # 任务：计算市场份额、竞争力得分并识别优势对手
 
-competitors = [
-    {"name": "我们", "sales": 500000, "price_score": 80, "rating": 85, "features": 90},
-    {"name": "竞品A", "sales": 380000, "price_score": 75, "rating": 78, "features": 82},
-    {"name": "竞品B", "sales": 420000, "price_score": 88, "rating": 82, "features": 75},
-    {"name": "竞品C", "sales": 250000, "price_score": 70, "rating": 72, "features": 85},
-]
+# TODO: 构造 4 个竞品数据，每条包含 name / sales / price_score / rating / features
+competitors = []
 
-market_total = sum(c["sales"] for c in competitors)
+# TODO: 总市场销售额
+market_total = None
+# TODO: 遍历竞品，计算 share = sales / market_total * 100
+#       综合竞争力 = share * 0.3 + price_score * 0.2 + rating * 0.3 + features * 0.2
 for c in competitors:
-    share = c["sales"] / market_total * 100
-    c["share"] = share
-    # 综合竞争力 = 份额*0.3 + 价格*0.2 + 用户评分*0.3 + 功能*0.2
-    c["score"] = share * 0.3 + c["price_score"] * 0.2 + c["rating"] * 0.3 + c["features"] * 0.2
+    pass
 
-avg_score = sum(c["score"] for c in competitors) / len(competitors)
+# TODO: 计算平均竞争力得分
+avg_score = None
 
+# TODO: 打印报告（公司名 / 销售额 / 份额 / 竞争力 / 是否主要对手 / 是否优势方
 print("=== 竞品分析报告 ===")
-print(f"{'公司':<8} {'销售额':>10} {'份额':>7} {'竞争力':>7} {'主要对手':>8} {'优势方':>6}")
-for c in competitors:
-    main = "是" if c["share"] > 20 else "否"
-    strong = "是" if c["score"] > avg_score else "否"
-    print(f'{c["name"]:<8} \${c["sales"]:>9,} {c["share"]:>6.1f}% {c["score"]:>6.1f} {main:>8} {strong:>6}')
-
-strong_names = [c["name"] for c in competitors if c["score"] > avg_score]
-print(f"\n平均竞争力得分: {avg_score:.1f}")
-print(f"高于平均的玩家: {', '.join(strong_names)}")
 `,
         expectedOutput: 'Market',
         hint: "解题思路：用列表存储竞品数据，计算市场份额和综合竞争力得分，找出主要对手和高于平均分的优势方后打印报告。"
@@ -2871,49 +2828,34 @@ def feature_importance_analysis(df: pd.DataFrame, target_column: str):
         initialCode: `# ========== 收入预测分析练习 ==========
 # 任务：基于历史销售数据计算移动平均 (MA3) 与增长率，预测下一期销售额
 
-months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-sales = [10000, 12000, 11500, 13500, 14000, 15000, 14500, 16000, 17500, 17000, 18500, 20000]
+# TODO: 定义 12 个月的月份名与销售额列表
+months = []
+sales = []
 
+# TODO: 打印历史销售数据
 print("=== 历史销售数据 ===")
-for m, s in zip(months, sales):
-    print(f"{m}: \${s:,.0f}")
 
-# 3 个月移动平均预测：预测 i = 平均(sales[i-3:i])
-ma_predictions = [None, None]  # 前两个月无预测
+# TODO: MA3 = 每 3 个月的平均值，作为下一期预测
+#       用 for 循环从第 3 个月开始，循环计算
+#       同时收集 errors = 预测值 - 实际下期值
+#       注意：需要用列表推导或循环构造 ma_predictions
+ma_predictions = []
 errors = []
-for i in range(2, len(sales)):
-    ma = (sales[i - 2] + sales[i - 1] + sales[i]) / 3  # 当前 MA3
-    if i + 1 < len(sales):
-        pred_next = ma
-        errors.append(pred_next - sales[i + 1])
-        ma_predictions.append(pred_next)
-    else:
-        ma_predictions.append(ma)
 
+# TODO: 打印预测与实际对比
 print("\n--- 预测误差 (MA3 vs 实际下期) ---")
-for i, pred in enumerate(ma_predictions):
-    if pred is None:
-        continue
-    month_idx = i + 1  # 预测的是下期
-    if month_idx < len(sales):
-        print(f"预测 {months[month_idx]}: \${pred:,.0f} (实际 \${sales[month_idx]:,.0f}, 差 {pred - sales[month_idx]:+,.0f})")
 
-# 增长率
-recent_growths = [(sales[i] - sales[i - 1]) / sales[i - 1] for i in range(len(sales) - 3, len(sales))]
-avg_growth = sum(recent_growths) / len(recent_growths)
-pred_next_month_growth = sales[-1] * (1 + avg_growth)
+# TODO: 计算最近 3 个月的平均环比增长率
+#       环比增长率 = (本月 - 上月) / 上月
+recent_growths = []
+avg_growth = None
 
-# MAE / RMSE
-mae = sum(abs(e) for e in errors) / len(errors)
-rmse = (sum(e * e for e in errors) / len(errors)) ** 0.5
+# TODO: MAE = mean(abs(errors))，RMSE = sqrt(mean(errors^2))
+mae = None
+rmse = None
 
-print(f"\n=== 预测评估指标 ===")
-print(f"MAE: \${mae:,.2f}")
-print(f"RMSE: \${rmse:,.2f}")
-print(f"最近 3 月平均环比增长率: {avg_growth * 100:+.2f}%")
-print(f"下一月增长法预测: \${pred_next_month_growth:,.0f}")
-last_ma = (sales[-3] + sales[-2] + sales[-1]) / 3
-print(f"下一月 MA3 预测: \${last_ma:,.0f}")
+# TODO: 打印评估指标、平均增长率、下一月增长法预测、MA3 预测
+print("\n=== 预测评估指标 ===")
 `,
         expectedOutput: 'Forecast',
         hint: "解题思路：用列表存储 12 个月销售额，计算 3 个月移动平均作为预测值，再计算 MAE 和 RMSE 并打印预测报告。"
