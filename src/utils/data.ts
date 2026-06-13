@@ -301,23 +301,24 @@ def analyze_cart_metrics(df: pd.DataFrame):
 # 任务：创建模拟购物车数据，统计总数、完成数，并计算放弃率
 
 # 1) 模拟 3 个购物车（同 cart_id 可能多条商品）
+# TODO: 在这里构造数据列表，每条包含 cart_id / user_id / price / purchase_completed
 data = [
-    {"cart_id": 1, "user_id": 101, "price": 29.9, "purchase_completed": True},
-    {"cart_id": 1, "user_id": 101, "price": 15.5, "purchase_completed": True},
-    {"cart_id": 2, "user_id": 102, "price": 89.0, "purchase_completed": False},
-    {"cart_id": 2, "user_id": 102, "price": 12.3, "purchase_completed": False},
-    {"cart_id": 3, "user_id": 103, "price": 45.0, "purchase_completed": True},
+
 ]
 
 # 2) 统计
-total_carts = len(set(item["cart_id"] for item in data))
-completed_carts = len(set(d["cart_id"] for d in data if d["purchase_completed"]))
-abandonment_rate = (total_carts - completed_carts) / total_carts * 100
+# TODO: 用 set() 去重，统计 unique cart id 数量
+total_carts = None
+# TODO: 筛选 purchase_completed==True 的 cart_id 并去重计数
+completed_carts = None
+# TODO: 计算 (total - completed) / total * 100
+abandonment_rate = None
 
 # 3) 打印
+# TODO: 用 f-string 打印 Total carts / Completed carts / Abandonment rate
 print(f"Total carts: {total_carts}")
 print(f"Completed carts: {completed_carts}")
-print(f"Abandonment rate: {abandonment_rate:.1f}%")
+print(f"Abandonment rate: {abandonment_rate}")
 `,
         expectedOutput: 'Total carts',
         hint: '核心思路：\n1. 用列表推导式创建数据：[{"cart_id":1, "price":29.9, "purchase_completed":True}, ...]\n2. 用set(item["cart_id"] for item in data)去重后取len()\n3. completed用条件过滤：d for d in data if d["purchase_completed"]\n4. 打印时使用 f-string 格式化：f"Abandonment rate: {rate:.1f}%"'
@@ -570,37 +571,23 @@ def perform_kmeans_clustering(X, n_clusters):
         initialCode: `# ========== 客户分群分析练习 ==========
 # 任务：创建客户数据，计算综合价值分，并按分群统计
 
-# 1) 客户数据
+# 1) TODO: 构造 5 个客户，每条包含 id / age / annual_income / spending_score
 customers = [
-    {"id": 1, "age": 25, "annual_income": 40, "spending_score": 85},
-    {"id": 2, "age": 45, "annual_income": 85, "spending_score": 35},
-    {"id": 3, "age": 32, "annual_income": 65, "spending_score": 70},
-    {"id": 4, "age": 55, "annual_income": 95, "spending_score": 20},
-    {"id": 5, "age": 28, "annual_income": 55, "spending_score": 92},
+
 ]
 
-# 2) 计算价值分：age*0.1 + income*0.5 + spending*0.4
+# 2) TODO: 用 for 循环计算 value_score = age*0.1 + income*0.5 + spending*0.4
+#    并按阈值判定 segment：>60 -> High，>=30 -> Medium，其它 -> Low
 for c in customers:
-    c["value_score"] = c["age"] * 0.1 + c["annual_income"] * 0.5 + c["spending_score"] * 0.4
-    if c["value_score"] > 60:
-        c["segment"] = "High value customers"
-    elif c["value_score"] >= 30:
-        c["segment"] = "Medium value customers"
-    else:
-        c["segment"] = "Low value customers"
+    c["value_score"] = None  # TODO
+    c["segment"] = None      # TODO
 
-# 3) 统计各群数量
+# 3) TODO: 用字典统计各群客户数量
 seg_counts = {}
-for c in customers:
-    seg_counts[c["segment"]] = seg_counts.get(c["segment"], 0) + 1
 
-# 4) 打印
+# 4) TODO: 打印分群结果 + 各群统计
 print("=== 客户分群结果 ===")
-for c in customers:
-    print(f"客户{c['id']}: 价值分={c['value_score']:.1f}  -> {c['segment']}")
 print("\n=== 各群统计 ===")
-for seg, cnt in seg_counts.items():
-    print(f"{seg}: {cnt} 人")
 `,
         expectedOutput: 'High value customers',
         hint: "解题思路：用列表存储客户数据，用 for 循环计算价值分并判断分群，统计各群客户数量后打印。"
@@ -861,26 +848,24 @@ def analyze_product_performance(df: pd.DataFrame):
         initialCode: `# ========== 销售数据分析练习 ==========
 # 任务：月度销售数据统计、增长率分析与最高最低月份识别
 
-sales = [("Jan", 12000), ("Feb", 15000), ("Mar", 18000),
-         ("Apr", 16500), ("May", 22000), ("Jun", 25000)]
+# TODO: 构造 6 个月销售数据列表，元素为 (月份, 销售额) 的元组
+sales = []
 
-total = sum(s for _, s in sales)
-avg = total / len(sales)
-top = max(sales, key=lambda x: x[1])
-bottom = min(sales, key=lambda x: x[1])
+# TODO: 用 sum() 计算总销售额
+total = None
+# TODO: 计算平均月销售额
+avg = None
+# TODO: 用 max() + lambda key 找最高月份元组
+top = None
+# TODO: 用 min() + lambda key 找最低月份元组
+bottom = None
 
+# TODO: 打印月度报告
 print("=== 销售月度报告 ===")
-for m, s in sales:
-    print(f"{m}: \${s:,.0f}")
-print(f"\n总销售额: \${total:,.0f}")
-print(f"平均月销售额: \${avg:,.0f}")
-print(f"最高月份: {top[0]} (\${top[1]:,.0f})")
-print(f"最低月份: {bottom[0]} (\${bottom[1]:,.0f})")
 
+# TODO: 用 for 循环打印每月销售额与环比增长率
+#       环比增长率 = (本月 - 上月) / 上月 * 100
 print("\n--- 环比增长率 (Growth Rate) ---")
-for i in range(1, len(sales)):
-    rate = (sales[i][1] - sales[i - 1][1]) / sales[i - 1][1] * 100
-    print(f"{sales[i - 1][0]} -> {sales[i][0]}: {rate:+.1f}%")
 `,
         expectedOutput: 'Growth Rate',
         hint: "解题思路：用列表存储每月销售额，遍历计算环比增长率，用 max/min 找出最高最低月份，最后打印完整分析报告。"
@@ -1128,33 +1113,23 @@ def analyze_user_paths(df: pd.DataFrame):
         initialCode: `# ========== 用户行为漏斗分析练习 ==========
 # 任务：计算用户行为漏斗（访问 -> 产品页 -> 加购 -> 结账 -> 购买）的转化率与流失率
 
-funnel = [
-    ("访问", 10000),
-    ("产品页", 6500),
-    ("加入购物车", 2800),
-    ("结账", 1500),
-    ("完成购买", 1100),
-]
+# TODO: 构造漏斗数据，每个元素为 (环节名称, 用户数) 的元组
+#       示例：访问 10000 -> 产品页 6500 -> 加购 2800 -> 结账 1500 -> 购买 1100
+funnel = []
 
-total_users = funnel[0][1]
+# TODO: 第一环节的用户数 = 总用户数
+total_users = None
 highest_drop_stage = None
 highest_drop_rate = -1.0
 
+# TODO: 用 for 循环 + enumerate 遍历漏斗
+#       转化率 = 当前用户数 / 总用户数 * 100
+#       本环节流失率 = (上一环节用户数 - 本环节用户数) / 上一环节用户数 * 100
+#       记录最高流失率的环节
 print("=== 用户行为漏斗分析报告 ===")
-for i, (stage, users) in enumerate(funnel):
-    conversion = users / total_users * 100
-    if i == 0:
-        drop_off = 0.0
-    else:
-        drop_off = (funnel[i - 1][1] - users) / funnel[i - 1][1] * 100
-        if drop_off > highest_drop_rate:
-            highest_drop_rate = drop_off
-            highest_drop_stage = (funnel[i - 1][0], stage)
-    print(f"{stage}: {users} 用户 | 转化率: {conversion:.1f}% | 流失率: {drop_off:.1f}%")
+# TODO: for i, (stage, users) in enumerate(funnel):
 
-final_conversion = funnel[-1][1] / total_users * 100
-print(f"\n总转化率: {final_conversion:.1f}%")
-print(f"最严重流失环节: {highest_drop_stage[0]} -> {highest_drop_stage[1]} ({highest_drop_rate:.1f}%)")
+# TODO: 打印总转化率和最严重流失环节
 `,
         expectedOutput: 'Funnel',
         hint: "解题思路：用列表存储漏斗每环节用户数，遍历计算转化率和流失率，找出流失最高环节并输出完整报告。"
@@ -1431,23 +1406,21 @@ def calculate_sample_size(
         initialCode: `# ========== A/B 测试分析练习 ==========
 # 任务：计算对照组 / 实验组的转化率，并评估 Lift
 
-# 对照组（旧版）
-control_total, control_conv = 5000, 520
-# 实验组（新 UI）
-variant_total, variant_conv = 5000, 610
+# TODO: 定义对照组 / 实验组的总人数和转化数
+control_total, control_conv = 0, 0
+variant_total, variant_conv = 0, 0
 
-control_rate = control_conv / control_total * 100
-variant_rate = variant_conv / variant_total * 100
-lift = (variant_rate - control_rate) / control_rate * 100
+# TODO: 计算两组的转化率（%）
+control_rate = None
+variant_rate = None
+# TODO: 计算 Lift = (实验组 - 对照组) / 对照组 * 100
+lift = None
 
+# TODO: 打印报告（对照组/实验组转化率 + Lift）
 print("=== A/B 测试分析报告 ===")
-print(f"对照组: {control_conv}/{control_total} 转化，转化率 {control_rate:.2f}%")
-print(f"实验组: {variant_conv}/{variant_total} 转化，转化率 {variant_rate:.2f}%")
-print(f"Lift: {lift:+.2f}%")
 
-# 简易显著性判定
-significant = abs(lift) > 5 and min(control_total, variant_total) > 1000
-print(f"显著: {'是 (pseudo significant)' if significant else '否'}")
+# TODO: 简易显著性判定：abs(Lift) > 5 且 每组样本数 > 1000
+print(f"Lift: {lift}")
 `,
         expectedOutput: 'Lift',
         hint: "解题思路：用字典存储对照组/实验组总人数和转化数，计算转化率及 Lift，用简单规则判断显著性后打印报告。"
