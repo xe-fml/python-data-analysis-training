@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Play, RotateCcw, Terminal, Copy, Check, AlertCircle } from 'lucide-react'
+import { Play, RotateCcw, Terminal, Copy, Check, AlertCircle, Package } from 'lucide-react'
 
 interface PythonEditorProps {
   initialCode?: string
@@ -14,6 +14,7 @@ let pyodideLoadingPromise: Promise<any> | null = null
 
 const defaultCode = `# 在这里编写你的 Python 代码
 # 点击"运行"按钮执行代码
+# 已预装: pandas, numpy (首次运行会自动加载)
 
 print("Hello, Python 数据分析!")
 `
@@ -28,7 +29,8 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
   const [output, setOutput] = useState('')
   const [isRunning, setIsRunning] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [loadProgress, setLoadProgress] = useState(0)
+  const [loadingStage, setLoadingStage] = useState<string>('')
+  const [packagesLoaded, setPackagesLoaded] = useState(false)
   const [copied, setCopied] = useState(false)
   const [showHint, setShowHint] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -38,53 +40,40 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
     if (pyodideInstance) return
 
     if (pyodideLoadingPromise) {
-      pyodideLoadingPromise.then((py) => {
+      pyodideLoadingPromise.then(() => {
         setIsLoading(false)
       })
       return
     }
 
     setIsLoading(true)
+    setLoadingStage('正在下载 Pyodide…')
 
     pyodideLoadingPromise = new Promise(async (resolve, reject) => {
       try {
-        // @ts-ignore: loadPyodide from CDN
-        const { loadPyodide } = window as any
-
-        if (!loadPyodide) {
-          // Load the Pyodide script from CDN
-          const script = document.createElement('script')
-          script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js'
-          script.async = true
-          script.onload = async () => {
-            try {
-              // @ts-ignore
-              const pyodide = await (window as any).loadPyodide({
-                indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
-              })
-
-              pyodideInstance = pyodide
-              setIsLoading(false)
-              resolve(pyodide)
-            } catch (err) {
-              setIsLoading(false)
-              reject(err)
-            }
-          }
-          script.onerror = () => {
+        const script = document.createElement('script')
+        script.src = 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js'
+        script.async = true
+        script.onload = async () => {
+          try {
+            const pyodide = await (window as any).loadPyodide({
+              indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
+            })
+            pyodideInstance = pyodide
+            setLoadingStage('')
             setIsLoading(false)
-            setOutput('❌ 无法加载 Pyodide。请检查网络连接。')
-            reject(new Error('Failed to load Pyodide'))
+            resolve(pyodide)
+          } catch (err) {
+            setIsLoading(false)
+            reject(err)
           }
-          document.head.appendChild(script)
-        } else {
-          const pyodide = await loadPyodide({
-            indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.2/full/',
-          })
-          pyodideInstance = pyodide
-          setIsLoading(false)
-          resolve(pyodide)
         }
+        script.onerror = () => {
+          setIsLoading(false)
+          setOutput('❌ 无法加载 Pyodide。请检查网络连接。')
+          reject(new Error('Failed to load Pyodide'))
+        }
+        document.head.appendChild(script)
       } catch (error) {
         setIsLoading(false)
         reject(error)
@@ -92,62 +81,74 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
     })
   }, [])
 
+  // Load pandas & numpy on demand
+  const loadDataPackages = async (pyodide: any): Promise<void> => {
+    if (packagesLoaded) return
+    setLoadingStage('正在加载 pandas / numpy…')
+    try {
+      await pyodide.loadPackage(['pandas', 'numpy'])
+      setPackagesLoaded(true)
+    } catch (e: any) {
+      // 非致命：给出提示，继续运行
+      setOutput((prev) => prev + '\n⚠️ 警告: pandas/numpy 加载失败，将回退到标准库模式。\n')
+    } finally {
+      setLoadingStage('')
+    }
+  }
+
+  // Heuristic: does the code need pandas/numpy?
+  const needsDataPackages = (src: string): boolean => {
+    const keywords = ['import pandas', 'import numpy', 'from pandas', 'from numpy', 'import matplotlib', 'from matplotlib', 'import sklearn', 'from sklearn']
+    return keywords.some((k) => src.includes(k))
+  }
+
   const runCode = async () => {
-    if (isRunning || isLoading) return
+    if (isRunning) return
 
     setIsRunning(true)
     setOutput('⏳ 正在执行代码...\n')
 
     try {
       if (!pyodideInstance) {
-        // Wait for pyodide to load
         setOutput('⏳ 正在加载 Python 运行环境...\n')
         pyodideInstance = await pyodideLoadingPromise
       }
 
-      // Capture print output by redirecting stdout
+      // Conditionally load packages
+      if (needsDataPackages(code)) {
+        await loadDataPackages(pyodideInstance)
+      }
+
+      // Redirect stdout/stderr
       pyodideInstance.runPython(`
-        import sys
-        import io
-        sys.stdout = io.StringIO()
-        sys.stderr = io.StringIO()
-      `)
+import sys, io
+sys.stdout = io.StringIO()
+sys.stderr = io.StringIO()
+`)
 
       try {
         await pyodideInstance.runPythonAsync(code)
-      } catch (e: any) {
-        // Capture the error
+      } catch {
         pyodideInstance.runPython(`
-          import sys
-          import traceback
-          print(traceback.format_exc(), file=sys.stdout)
-        `)
+import sys, traceback
+print(traceback.format_exc(), file=sys.stdout)
+`)
       }
 
-      // Get captured output
       const stdout = pyodideInstance.runPython('sys.stdout.getvalue()')
       const stderr = pyodideInstance.runPython('sys.stderr.getvalue()')
 
       let result = ''
-      if (stdout && stdout.trim()) {
-        result += stdout
-      }
-      if (stderr && stderr.trim()) {
-        result += (result ? '\n' : '') + '[错误输出]\n' + stderr
-      }
-
-      if (!result.trim()) {
-        result = '(代码运行完成，但没有输出内容)'
-      }
+      if (stdout && stdout.trim()) result += stdout
+      if (stderr && stderr.trim()) result += (result ? '\n' : '') + '[错误输出]\n' + stderr
+      if (!result.trim()) result = '(代码运行完成，但没有输出内容)'
 
       setOutput(result)
 
-      // Check if output matches expected output
       if (expectedOutput && expectedOutput.trim() && result.includes(expectedOutput.trim())) {
         setOutput(result + '\n\n✅ 恭喜！你的输出与预期相符。')
         if (onComplete) onComplete(true)
       }
-
     } catch (error: any) {
       setOutput('❌ 执行错误:\n' + (error?.message || String(error)))
     } finally {
@@ -175,8 +176,7 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
       e.preventDefault()
       const start = textareaRef.current!.selectionStart
       const end = textareaRef.current!.selectionEnd
-      const newValue = code.substring(0, start) + '    ' + code.substring(end)
-      setCode(newValue)
+      setCode(code.substring(0, start) + '    ' + code.substring(end))
       setTimeout(() => {
         textareaRef.current!.selectionStart = textareaRef.current!.selectionEnd = start + 4
       }, 0)
@@ -187,16 +187,20 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
     <div className="rounded-xl overflow-hidden border border-gray-700 bg-gray-900 shadow-lg">
       {/* Header */}
       <div className="bg-gray-800 px-4 py-3 flex items-center justify-between border-b border-gray-700">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="flex gap-1.5">
             <span className="w-3 h-3 rounded-full bg-red-500"></span>
             <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
             <span className="w-3 h-3 rounded-full bg-green-500"></span>
           </div>
           <span className="text-gray-300 text-sm font-medium ml-2">Python 3.11</span>
-          {isLoading && (
+          <span className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-700/60 rounded-md px-2 py-0.5">
+            <Package className="w-3 h-3" />
+            pandas / numpy 可按需加载
+          </span>
+          {isLoading && loadingStage && (
             <span className="text-yellow-400 text-xs ml-2 animate-pulse">
-              ⏳ 正在加载 Python 运行环境...
+              ⏳ {loadingStage}
             </span>
           )}
         </div>

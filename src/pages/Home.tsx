@@ -98,23 +98,23 @@ const Home: React.FC = () => {
       
       {/* CTA Section */}
       <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-primary to-secondary rounded-3xl p-12 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 bottom-0 opacity-10">
-            <div className="absolute top-8 left-8 w-32 h-32 bg-white rounded-full" />
-            <div className="absolute bottom-8 right-8 w-24 h-24 bg-white rounded-full" />
+        <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-teal-50 rounded-3xl p-12 text-center relative overflow-hidden border border-blue-100">
+          <div className="absolute top-0 left-0 right-0 bottom-0 opacity-20">
+            <div className="absolute top-8 left-8 w-32 h-32 bg-blue-200 rounded-full" />
+            <div className="absolute bottom-8 right-8 w-24 h-24 bg-teal-200 rounded-full" />
           </div>
           
           <div className="relative z-10">
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
               准备开始学习了吗？
             </h2>
-            <p className="text-white/90 mb-8 max-w-xl mx-auto">
+            <p className="text-gray-700 mb-8 max-w-xl mx-auto">
               选择一个实战项目，开始您的数据分析学习之旅
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/project/shopping-cart"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 立即开始
                 <ArrowRight className="w-5 h-5" />

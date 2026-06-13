@@ -297,7 +297,28 @@ def analyze_cart_metrics(df: pd.DataFrame):
         options: [],
         correctAnswer: 0,
         explanation: '参考实现：\n\n# 模拟3个购物车的数据\ndata = [\n    {"cart_id": 1, "user_id": 101, "price": 29.9, "purchase_completed": True},\n    {"cart_id": 1, "user_id": 101, "price": 15.5, "purchase_completed": True},\n    {"cart_id": 2, "user_id": 102, "price": 89.0, "purchase_completed": False},\n    {"cart_id": 2, "user_id": 102, "price": 12.3, "purchase_completed": False},\n    {"cart_id": 3, "user_id": 103, "price": 45.0, "purchase_completed": True},\n]\n\ntotal_carts = len(set(item["cart_id"] for item in data))  # = 3\ncompleted_carts = len(set(d["cart_id"] for d in data if d["purchase_completed"]))  # = 2\nabandonment_rate = (total_carts - completed_carts) / total_carts * 100  # = 33.3%\n\nprint(f"Total carts: {total_carts}")\nprint(f"Completed carts: {completed_carts}")\nprint(f"Abandonment rate: {abandonment_rate:.1f}%")',
-        initialCode: `# ========== 购物车分析练习 ==========\n# 任务：\n# 1. 创建模拟购物车数据（3个购物车）\n# 2. 统计唯一购物车总数\n# 3. 统计完成购买的购物车数量\n# 4. 计算并打印购物车放弃率\n\n# 提示：\n# - 每个购物车可能有多条商品记录（同cart_id多条）\n# - 用set()去重统计唯一购物车数\n# - purchase_completed=True 表示完成购买\n\n# -------- 在这里编写你的代码 --------\n\n\n\n\n\n\n\n# 参考结构：\n# 1) 创建数据列表，每个item包含: cart_id, user_id, price, purchase_completed\n# 2) total_carts = set中cart_id的数量\n# 3) completed_carts = purchase_completed为True的cart_id的去重数量\n# 4) abandonment_rate = (total - completed) / total * 100\n# 5) print 输出三个指标\n`,
+        initialCode: `# ========== 购物车分析练习 ==========
+# 任务：创建模拟购物车数据，统计总数、完成数，并计算放弃率
+
+# 1) 模拟 3 个购物车（同 cart_id 可能多条商品）
+data = [
+    {"cart_id": 1, "user_id": 101, "price": 29.9, "purchase_completed": True},
+    {"cart_id": 1, "user_id": 101, "price": 15.5, "purchase_completed": True},
+    {"cart_id": 2, "user_id": 102, "price": 89.0, "purchase_completed": False},
+    {"cart_id": 2, "user_id": 102, "price": 12.3, "purchase_completed": False},
+    {"cart_id": 3, "user_id": 103, "price": 45.0, "purchase_completed": True},
+]
+
+# 2) 统计
+total_carts = len(set(item["cart_id"] for item in data))
+completed_carts = len(set(d["cart_id"] for d in data if d["purchase_completed"]))
+abandonment_rate = (total_carts - completed_carts) / total_carts * 100
+
+# 3) 打印
+print(f"Total carts: {total_carts}")
+print(f"Completed carts: {completed_carts}")
+print(f"Abandonment rate: {abandonment_rate:.1f}%")
+`,
         expectedOutput: 'Total carts',
         hint: '核心思路：\n1. 用列表推导式创建数据：[{"cart_id":1, "price":29.9, "purchase_completed":True}, ...]\n2. 用set(item["cart_id"] for item in data)去重后取len()\n3. completed用条件过滤：d for d in data if d["purchase_completed"]\n4. 打印时使用 f-string 格式化：f"Abandonment rate: {rate:.1f}%"'
       }
@@ -546,7 +567,41 @@ def perform_kmeans_clustering(X, n_clusters):
         options: [],
         correctAnswer: 0,
         explanation: '参考实现：\n\n# 5个客户数据\ncustomers = [\n    {"id": 1, "age": 25, "annual_income": 40, "spending_score": 85},\n    {"id": 2, "age": 45, "annual_income": 120, "spending_score": 70},\n    {"id": 3, "age": 35, "annual_income": 70, "spending_score": 55},\n    {"id": 4, "age": 55, "annual_income": 150, "spending_score": 45},\n    {"id": 5, "age": 30, "annual_income": 55, "spending_score": 95},\n]\n\nfor c in customers:\n    c["value_score"] = c["age"]*0.1 + c["annual_income"]*0.5 + c["spending_score"]*0.4\n    if c["value_score"] > 60:\n        c["segment"] = "High"\n    elif c["value_score"] >= 30:\n        c["segment"] = "Medium"\n    else:\n        c["segment"] = "Low"\n\nseg_counts = {}\nfor c in customers:\n    s = c["segment"]\n    seg_counts[s] = seg_counts.get(s, 0) + 1\n\nfor seg in ["High", "Medium", "Low"]:\n    print(f"{seg} value customers: {seg_counts.get(seg, 0)}")',
-        initialCode: `# ========== 客户分群分析练习 ==========\n# 任务：\n# 1. 创建5个客户的模拟数据\n# 2. 计算每个客户的综合价值分\n# 3. 按价值分High/Medium/Low分群\n# 4. 打印各群客户数量\n\n# 价值分公式：age*0.1 + annual_income*0.5 + spending_score*0.4\n# 分群规则： >60 -> High, 30-60 -> Medium, <30 -> Low\n\n# -------- 在这里编写你的代码 --------\n\n\n\n\n\n\n\n\n# 参考步骤：\n# 1. 创建 customers = [{"id":1, "age":25, "annual_income":40, "spending_score":85}, ...]\n# 2. 用for循环遍历每个客户，计算value_score\n# 3. 根据value_score判断segment并添加到字典\n# 4. 用另一个字典 seg_counts 统计每群数量\n# 5. 用for循环打印每群的客户数量\n`,
+        initialCode: `# ========== 客户分群分析练习 ==========
+# 任务：创建客户数据，计算综合价值分，并按分群统计
+
+# 1) 客户数据
+customers = [
+    {"id": 1, "age": 25, "annual_income": 40, "spending_score": 85},
+    {"id": 2, "age": 45, "annual_income": 85, "spending_score": 35},
+    {"id": 3, "age": 32, "annual_income": 65, "spending_score": 70},
+    {"id": 4, "age": 55, "annual_income": 95, "spending_score": 20},
+    {"id": 5, "age": 28, "annual_income": 55, "spending_score": 92},
+]
+
+# 2) 计算价值分：age*0.1 + income*0.5 + spending*0.4
+for c in customers:
+    c["value_score"] = c["age"] * 0.1 + c["annual_income"] * 0.5 + c["spending_score"] * 0.4
+    if c["value_score"] > 60:
+        c["segment"] = "High value customers"
+    elif c["value_score"] >= 30:
+        c["segment"] = "Medium value customers"
+    else:
+        c["segment"] = "Low value customers"
+
+# 3) 统计各群数量
+seg_counts = {}
+for c in customers:
+    seg_counts[c["segment"]] = seg_counts.get(c["segment"], 0) + 1
+
+# 4) 打印
+print("=== 客户分群结果 ===")
+for c in customers:
+    print(f"客户{c['id']}: 价值分={c['value_score']:.1f}  -> {c['segment']}")
+print("\n=== 各群统计 ===")
+for seg, cnt in seg_counts.items():
+    print(f"{seg}: {cnt} 人")
+`,
         expectedOutput: 'High value customers',
         hint: "解题思路：用列表存储客户数据，用 for 循环计算价值分并判断分群，统计各群客户数量后打印。"
       }
@@ -804,24 +859,28 @@ def analyze_product_performance(df: pd.DataFrame):
         correctAnswer: 0,
         explanation: '参考实现：\n1) 使用列表存储每月数据：sales = [("Jan", 12000), ("Feb", 15000), ...]\n2) 环比增长率 = (本月 - 上月) / 上月 × 100\n3) 用 for idx in range(1, len(sales)): 遍历计算\n4) max_sale = max(sales, key=lambda x: x[1])\n5) avg = sum(s for _, s in sales) / len(sales)\n6) 用 print() 输出格式化报告，确保包含"Growth Rate"字样',
         initialCode: `# ========== 销售数据分析练习 ==========
-# 任务：
-# 1. 创建6个月的模拟销售数据（月份, 销售额）
-# 2. 计算每月环比增长率（%）
-# 3. 找出最高/最低销售月份
-# 4. 计算平均月销售额
-# 5. 打印完整分析报告
+# 任务：月度销售数据统计、增长率分析与最高最低月份识别
 
-# 提示：
-# - 数据结构：使用列表存储元组，如 [("Jan", 12000), ("Feb", 15000), ...]
-# - 增长率公式：(本月-上月)/上月 * 100
-# - 从第2个月（索引1）开始计算增长率
-# - max/min 可用 key 参数：max(sales, key=lambda x: x[1])
-# - 输出中请包含 "Growth Rate" 字样
+sales = [("Jan", 12000), ("Feb", 15000), ("Mar", 18000),
+         ("Apr", 16500), ("May", 22000), ("Jun", 25000)]
 
-# -------- 在这里编写你的代码 --------
+total = sum(s for _, s in sales)
+avg = total / len(sales)
+top = max(sales, key=lambda x: x[1])
+bottom = min(sales, key=lambda x: x[1])
 
+print("=== 销售月度报告 ===")
+for m, s in sales:
+    print(f"{m}: \${s:,.0f}")
+print(f"\n总销售额: \${total:,.0f}")
+print(f"平均月销售额: \${avg:,.0f}")
+print(f"最高月份: {top[0]} (\${top[1]:,.0f})")
+print(f"最低月份: {bottom[0]} (\${bottom[1]:,.0f})")
 
-
+print("\n--- 环比增长率 (Growth Rate) ---")
+for i in range(1, len(sales)):
+    rate = (sales[i][1] - sales[i - 1][1]) / sales[i - 1][1] * 100
+    print(f"{sales[i - 1][0]} -> {sales[i][0]}: {rate:+.1f}%")
 `,
         expectedOutput: 'Growth Rate',
         hint: "解题思路：用列表存储每月销售额，遍历计算环比增长率，用 max/min 找出最高最低月份，最后打印完整分析报告。"
@@ -1067,24 +1126,35 @@ def analyze_user_paths(df: pd.DataFrame):
         correctAnswer: 0,
         explanation: '参考实现：\n1) funnel = [("访问", 10000), ("产品页", 6500), ("加购", 2800), ("结账", 1500), ("购买", 1100)]\n2) 转化率 = 当前用户数 / 首步用户数 × 100\n3) 流失率 = (上一步-当前步) / 上一步 × 100\n4) 用 for i in range(len(funnel)): 遍历每步\n5) 输出中包含"Conversion"或"Funnel"字样',
         initialCode: `# ========== 用户行为漏斗分析练习 ==========
-# 任务：
-# 1. 创建漏斗数据（5个步骤，每步用户数递减）
-# 2. 计算每步相对于首步的转化率（%）
-# 3. 计算每步相对于上一步的流失率（%）
-# 4. 找出流失最高的环节
-# 5. 打印完整漏斗分析报告
+# 任务：计算用户行为漏斗（访问 -> 产品页 -> 加购 -> 结账 -> 购买）的转化率与流失率
 
-# 提示：
-# - 漏斗步骤：访问 → 产品页 → 加购 → 结账 → 购买
-# - 数据结构：[("访问", 10000), ("产品页", 6500), ...]
-# - 转化率 = 当前用户数 / 首步用户数 * 100
-# - 流失率 = (上一步-当前步) / 上一步 * 100
-# - 输出中请包含 "Funnel" 或 "Conversion" 字样
+funnel = [
+    ("访问", 10000),
+    ("产品页", 6500),
+    ("加入购物车", 2800),
+    ("结账", 1500),
+    ("完成购买", 1100),
+]
 
-# -------- 在这里编写你的代码 --------
+total_users = funnel[0][1]
+highest_drop_stage = None
+highest_drop_rate = -1.0
 
+print("=== 用户行为漏斗分析报告 ===")
+for i, (stage, users) in enumerate(funnel):
+    conversion = users / total_users * 100
+    if i == 0:
+        drop_off = 0.0
+    else:
+        drop_off = (funnel[i - 1][1] - users) / funnel[i - 1][1] * 100
+        if drop_off > highest_drop_rate:
+            highest_drop_rate = drop_off
+            highest_drop_stage = (funnel[i - 1][0], stage)
+    print(f"{stage}: {users} 用户 | 转化率: {conversion:.1f}% | 流失率: {drop_off:.1f}%")
 
-
+final_conversion = funnel[-1][1] / total_users * 100
+print(f"\n总转化率: {final_conversion:.1f}%")
+print(f"最严重流失环节: {highest_drop_stage[0]} -> {highest_drop_stage[1]} ({highest_drop_rate:.1f}%)")
 `,
         expectedOutput: 'Funnel',
         hint: "解题思路：用列表存储漏斗每环节用户数，遍历计算转化率和流失率，找出流失最高环节并输出完整报告。"
@@ -1358,25 +1428,26 @@ def calculate_sample_size(
         options: [],
         correctAnswer: 0,
         explanation: '参考实现：\n1) control = {"total": 5000, "converted": 520}  variant = {"total": 5000, "converted": 610}\n2) 转化率 = converted / total × 100\n3) Lift = (实验组-对照组)/对照组 × 100\n4) 显著性规则：abs(lift) > 5 and min(total) > 1000\n5) 输出中包含"Lift"字样',
-        initialCode: `# ========== A/B测试分析练习 ==========
-# 任务：
-# 1. 创建对照组和实验组数据（每组分母总数和转化数）
-# 2. 计算各组转化率（%）
-# 3. 计算实验组相对对照组的提升率（Lift %）
-# 4. 简易判断显著性（差异>5% 且 样本量>1000 视为显著）
-# 5. 打印完整测试分析报告
+        initialCode: `# ========== A/B 测试分析练习 ==========
+# 任务：计算对照组 / 实验组的转化率，并评估 Lift
 
-# 提示：
-# - 数据结构：control = {"total": 5000, "converted": 520}
-# - 转化率 = converted / total * 100
-# - Lift = (variant_rate - control_rate) / control_rate * 100
-# - 显著性简易规则：abs(lift) > 5 and min(total) > 1000
-# - 输出中请包含 "Lift" 字样
+# 对照组（旧版）
+control_total, control_conv = 5000, 520
+# 实验组（新 UI）
+variant_total, variant_conv = 5000, 610
 
-# -------- 在这里编写你的代码 --------
+control_rate = control_conv / control_total * 100
+variant_rate = variant_conv / variant_total * 100
+lift = (variant_rate - control_rate) / control_rate * 100
 
+print("=== A/B 测试分析报告 ===")
+print(f"对照组: {control_conv}/{control_total} 转化，转化率 {control_rate:.2f}%")
+print(f"实验组: {variant_conv}/{variant_total} 转化，转化率 {variant_rate:.2f}%")
+print(f"Lift: {lift:+.2f}%")
 
-
+# 简易显著性判定
+significant = abs(lift) > 5 and min(control_total, variant_total) > 1000
+print(f"显著: {'是 (pseudo significant)' if significant else '否'}")
 `,
         expectedOutput: 'Lift',
         hint: "解题思路：用字典存储对照组/实验组总人数和转化数，计算转化率及 Lift，用简单规则判断显著性后打印报告。"
@@ -1623,24 +1694,29 @@ def first_touch_attribution(df: pd.DataFrame):
         correctAnswer: 0,
         explanation: '参考实现：\n1) channels = [{"name": "搜索引擎", "cost": 5000, "revenue": 25000, "users": 300}, ...]\n2) ROI = (revenue - cost) / cost × 100\n3) total_revenue = sum(c["revenue"] for c in channels)\n4) pct = revenue / total_revenue × 100\n5) 输出中包含"ROI"字样',
         initialCode: `# ========== 营销归因分析练习 ==========
-# 任务：
-# 1. 创建4个营销渠道数据（渠道名/成本/收入/转化用户数）
-# 2. 计算每个渠道的 ROI = (收入 - 成本) / 成本 * 100
-# 3. 计算每个渠道的归因收入占比（%）
-# 4. 找出 ROI 最高的渠道
-# 5. 打印完整归因分析报告
+# 任务：按渠道统计 ROI 与归因收入占比
 
-# 提示：
-# - 数据结构：[{"name": "搜索引擎", "cost": 5000, "revenue": 25000, "users": 300}, ...]
-# - ROI = (revenue - cost) / cost * 100
-# - 占比 = revenue / total_revenue * 100
-# - 用 max(channels, key=lambda x: (x["revenue"]-x["cost"])/x["cost"]) 找最高
-# - 输出中请包含 "ROI" 字样
+channels = [
+    {"name": "搜索引擎", "cost": 5000, "revenue": 25000, "users": 300},
+    {"name": "社交媒体", "cost": 3000, "revenue": 18000, "users": 250},
+    {"name": "邮件营销", "cost": 1500, "revenue": 9000, "users": 120},
+    {"name": "展示广告", "cost": 4000, "revenue": 12000, "users": 180},
+]
 
-# -------- 在这里编写你的代码 --------
+total_revenue = sum(c["revenue"] for c in channels)
+total_cost = sum(c["cost"] for c in channels)
 
+best_channel = max(channels, key=lambda c: (c["revenue"] - c["cost"]) / c["cost"])
 
+print("=== 营销渠道归因分析报告 ===")
+for c in channels:
+    roi = (c["revenue"] - c["cost"]) / c["cost"] * 100
+    share = c["revenue"] / total_revenue * 100
+    print(f'{c["name"]}: 成本=\${c["cost"]} 收入=\${c["revenue"]} ROI={roi:.1f}% 占比={share:.1f}%')
 
+overall_roi = (total_revenue - total_cost) / total_cost * 100
+print(f"\n总成本: \${total_cost} / 总收入: \${total_revenue} / 整体 ROI: {overall_roi:.1f}%")
+print(f'最佳 ROI 渠道: {best_channel["name"]}')
 `,
         expectedOutput: 'ROI',
         hint: "解题思路：用列表存储各渠道成本、收入和用户数，计算 ROI 和占比，用 max 找出最高 ROI 渠道并打印分析报告。"
@@ -1899,27 +1975,41 @@ def calculate_reorder_point(
         correctAnswer: 0,
         explanation: '参考实现：\n1) items = [{"name": "商品A", "cogs": 50000, "avg_inventory": 5000, "sales": 80000}, ...]\n2) turnover_rate = cogs / avg_inventory\n3) days_inventory = 365 / turnover_rate\n4) ABC分类：先按销售额降序，累加计算累计占比，再分类\n5) 输出中包含"Turnover"或"ABC"字样',
         initialCode: `# ========== 库存管理分析练习 ==========
-# 任务：
-# 1. 创建5个商品数据（商品名/销售成本COGS/平均库存/销售额）
-# 2. 计算每个商品的库存周转率 = cogs / avg_inventory
-# 3. 计算周转天数 = 365 / 周转率
-# 4. 按销售额降序排列，进行 ABC 分类
-#    - 累计销售额 <= 80% -> A
-#    - 累计销售额 <= 95% -> B
-#    - 其余 -> C
-# 5. 识别滞销商品（周转天数 > 90 天）
-# 6. 打印完整库存分析报告
+# 任务：计算库存周转率、周转天数、滞销识别，按销售额降序做 ABC 分类
 
-# 提示：
-# - 数据结构：[{"name": "商品A", "cogs": 50000, "avg_inventory": 5000, "sales": 80000}, ...]
-# - 排序：sorted(items, key=lambda x: x["sales"], reverse=True)
-# - 累计：用 running_sum 变量累加，running_sum_pct = running_sum / total_sales * 100
-# - 输出中请包含 "Turnover" 或 "ABC" 字样
+items = [
+    {"name": "商品A", "cogs": 50000, "avg_inventory": 5000, "sales": 80000},
+    {"name": "商品B", "cogs": 30000, "avg_inventory": 15000, "sales": 45000},
+    {"name": "商品C", "cogs": 15000, "avg_inventory": 3000, "sales": 22000},
+    {"name": "商品D", "cogs": 8000, "avg_inventory": 4000, "sales": 12000},
+    {"name": "商品E", "cogs": 5000, "avg_inventory": 2000, "sales": 8000},
+]
 
-# -------- 在这里编写你的代码 --------
+# 1) 计算周转率 / 周转天数
+for it in items:
+    it["turnover_rate"] = it["cogs"] / it["avg_inventory"]
+    it["days_inventory"] = 365 / it["turnover_rate"]
+    it["is_slow"] = it["days_inventory"] > 90
 
+# 2) 按销售额降序
+items_sorted = sorted(items, key=lambda x: x["sales"], reverse=True)
+total_sales = sum(it["sales"] for it in items_sorted)
 
+# 3) ABC 分类
+running = 0
+for it in items_sorted:
+    running += it["sales"]
+    pct = running / total_sales * 100
+    it["abc"] = "A" if pct <= 80 else ("B" if pct <= 95 else "C")
 
+print("=== 库存管理分析报告 ===")
+print(f"{'商品':<6} {'销售额':>8} {'周转率':>8} {'周转天数':>9} {'ABC':>4} {'滞销':>4}")
+for it in items_sorted:
+    slow = "是" if it["is_slow"] else "否"
+    print(f'{it["name"]:<6} \${it["sales"]:>8,} {it["turnover_rate"]:>8.2f} {it["days_inventory"]:>8.1f}天 {it["abc"]:>4} {slow:>4}')
+
+slow_items = [it["name"] for it in items_sorted if it["is_slow"]]
+print(f"\n建议优先清库存的商品: {', '.join(slow_items) if slow_items else '无'}")
 `,
         expectedOutput: 'ABC',
         hint: "解题思路：用列表存储商品数据，计算周转率和周转天数，按销售额降序排序后累加占比做 ABC 分类，最后打印报告。"
@@ -2188,28 +2278,46 @@ def simple_sentiment_analysis(df: pd.DataFrame, text_column: str):
         correctAnswer: 0,
         explanation: '参考实现：\n1) reviews = [{"rating": 9, "text": "great product love it"}, ...]\n2) 分类：for r in reviews: 用 r["rating"] 判断分类并计数\n3) NPS = (promoters - detractors) / total * 100\n4) CSAT = 评分>=4的数量 / total * 100\n5) 关键词：positive_words = ["good", "great", "excellent", "love", "nice"]\n   用 for text in reviews: 用 text.lower() 匹配关键词\n6) 输出中包含"NPS"字样',
         initialCode: `# ========== 客户满意度分析练习 ==========
-# 任务：
-# 1. 创建10个用户评分数据（rating 0-10）和对应的简短评价文本
-# 2. 计算 NPS（净推荐值）：
-#    - >=9 推荐者 (Promoter)
-#    - 7-8 被动者 (Passive)
-#    - <=6 贬损者 (Detractor)
-#    - NPS = 推荐者% - 贬损者%
-# 3. 计算 CSAT 满意率（rating >= 7 视为满意）
-# 4. 统计评价文本中正面关键词出现次数
-# 5. 打印完整满意度分析报告
+# 任务：计算 NPS、CSAT，并统计正面关键词频次
 
-# 提示：
-# - 数据结构：[{"rating": 9, "text": "great product love it"}, ...]
-# - 用 for r in reviews: 判断 r["rating"] 并分别累加计数
-# - positive_words = ["good", "great", "excellent", "love", "nice", "amazing"]
-# - 关键词统计：用 r["text"].lower().split() 分词后与 positive_words 比较
-# - 输出中请包含 "NPS" 字样
+reviews = [
+    {"rating": 9, "text": "great product love it excellent quality"},
+    {"rating": 10, "text": "amazing service highly recommend"},
+    {"rating": 8, "text": "good overall but slow delivery"},
+    {"rating": 6, "text": "average product nothing special"},
+    {"rating": 7, "text": "nice product works fine"},
+    {"rating": 9, "text": "love it best purchase ever"},
+    {"rating": 5, "text": "poor quality disappointed"},
+    {"rating": 10, "text": "amazing highly recommend great service"},
+    {"rating": 8, "text": "good value for money"},
+    {"rating": 4, "text": "bad experience wont buy again"},
+]
 
-# -------- 在这里编写你的代码 --------
+# NPS
+promoters = sum(1 for r in reviews if r["rating"] >= 9)
+detractors = sum(1 for r in reviews if r["rating"] <= 6)
+nps = (promoters - detractors) / len(reviews) * 100
 
+# CSAT (rating >= 7)
+csat = sum(1 for r in reviews if r["rating"] >= 7) / len(reviews) * 100
 
+# 正面关键词
+positive_words = {"good", "great", "excellent", "love", "nice", "amazing", "recommend"}
+keyword_count = {}
+for r in reviews:
+    for w in r["text"].lower().split():
+        if w in positive_words:
+            keyword_count[w] = keyword_count.get(w, 0) + 1
 
+print("=== 客户满意度分析报告 ===")
+print(f"样本数: {len(reviews)}")
+print(f"推荐者 (>=9分): {promoters} 人")
+print(f"贬损者 (<=6分): {detractors} 人")
+print(f"NPS Score: {nps:.1f}")
+print(f"CSAT (>=7分满意度): {csat:.1f}%")
+print("\n--- 正面关键词统计 ---")
+for w, cnt in sorted(keyword_count.items(), key=lambda x: -x[1]):
+    print(f"{w}: {cnt} 次")
 `,
         expectedOutput: 'NPS',
         hint: "解题思路：用列表存储评分+评论字典，用 sum 统计推荐者/贬损者计算 NPS，用评分>=7 计算 CSAT，最后打印报告。"
@@ -2482,26 +2590,34 @@ def competitor_comparison(competitor_data: pd.DataFrame):
         correctAnswer: 0,
         explanation: '参考实现：\n1) competitors = [{"name": "我们", "sales": 500000, "price": 80, "rating": 85, "features": 90}, ...]\n2) market_share = sales / total_sales × 100\n3) score = share×0.3 + price×0.2 + rating×0.3 + features×0.2\n4) main = [c for c in competitors if c["share"] > 20]\n5) strengths = [c for c in competitors if c["score"] > avg_score]\n6) 输出中包含"Market"或"Share"字样',
         initialCode: `# ========== 竞品分析练习 ==========
-# 任务：
-# 1. 创建4个竞品数据（公司名/销售额/价格评分/用户评分/功能评分）
-#    各项评分范围 0-100
-# 2. 计算各公司市场份额（%）= 销售额 / 市场总销售额 * 100
-# 3. 计算综合竞争力得分：
-#    score = 市场份额*0.3 + 价格*0.2 + 评分*0.3 + 功能*0.2
-# 4. 识别主要竞争对手（市场份额 > 20%）
-# 5. 识别高于平均分的公司（SWOT 优势方）
-# 6. 打印完整竞品分析报告
+# 任务：计算市场份额、竞争力得分并识别优势对手
 
-# 提示：
-# - 数据结构：[{"name": "我们", "sales": 500000, "price": 80, "rating": 85, "features": 90}, ...]
-# - total_sales = sum(c["sales"] for c in competitors)
-# - score 计算时使用刚算出的 share 百分比
-# - 输出中请包含 "Market" 或 "Share" 字样
+competitors = [
+    {"name": "我们", "sales": 500000, "price_score": 80, "rating": 85, "features": 90},
+    {"name": "竞品A", "sales": 380000, "price_score": 75, "rating": 78, "features": 82},
+    {"name": "竞品B", "sales": 420000, "price_score": 88, "rating": 82, "features": 75},
+    {"name": "竞品C", "sales": 250000, "price_score": 70, "rating": 72, "features": 85},
+]
 
-# -------- 在这里编写你的代码 --------
+market_total = sum(c["sales"] for c in competitors)
+for c in competitors:
+    share = c["sales"] / market_total * 100
+    c["share"] = share
+    # 综合竞争力 = 份额*0.3 + 价格*0.2 + 用户评分*0.3 + 功能*0.2
+    c["score"] = share * 0.3 + c["price_score"] * 0.2 + c["rating"] * 0.3 + c["features"] * 0.2
 
+avg_score = sum(c["score"] for c in competitors) / len(competitors)
 
+print("=== 竞品分析报告 ===")
+print(f"{'公司':<8} {'销售额':>10} {'份额':>7} {'竞争力':>7} {'主要对手':>8} {'优势方':>6}")
+for c in competitors:
+    main = "是" if c["share"] > 20 else "否"
+    strong = "是" if c["score"] > avg_score else "否"
+    print(f'{c["name"]:<8} \${c["sales"]:>9,} {c["share"]:>6.1f}% {c["score"]:>6.1f} {main:>8} {strong:>6}')
 
+strong_names = [c["name"] for c in competitors if c["score"] > avg_score]
+print(f"\n平均竞争力得分: {avg_score:.1f}")
+print(f"高于平均的玩家: {', '.join(strong_names)}")
 `,
         expectedOutput: 'Market',
         hint: "解题思路：用列表存储竞品数据，计算市场份额和综合竞争力得分，找出主要对手和高于平均分的优势方后打印报告。"
@@ -2780,27 +2896,51 @@ def feature_importance_analysis(df: pd.DataFrame, target_column: str):
         correctAnswer: 0,
         explanation: '参考实现：\n1) sales = [10000, 12000, 11500, 13500, 14000, 15000, 14500, 16000, 17500, 17000, 18500, 20000]\n2) MA3 = (sales[i-2] + sales[i-1] + sales[i]) / 3，从第3个月开始\n3) 增长率 = (sales[i] - sales[i-1]) / sales[i-1] × 100\n4) MAE = mean(|预测 - 实际|)，RMSE = sqrt(mean((预测 - 实际)^2))\n5) 输出中包含"Forecast"或"MAE"/"RMSE"字样',
         initialCode: `# ========== 收入预测分析练习 ==========
-# 任务：
-# 1. 创建12个月的历史销售数据
-# 2. 计算3个月移动平均（MA3）作为预测值
-# 3. 基于最近3个月平均增长率预测第 13 个月销售额
-# 4. 计算预测误差：MAE 和 RMSE
-# 5. 打印完整收入预测分析报告
+# 任务：基于历史销售数据计算移动平均 (MA3) 与增长率，预测下一期销售额
 
-# 提示：
-# - 数据结构：sales = [10000, 12000, 11500, 13500, 14000, 15000,
-#                       14500, 16000, 17500, 17000, 18500, 20000]
-# - MA3 预测：预测第 i+1 个月 = (sales[i-2] + sales[i-1] + sales[i]) / 3
-#   因此 MA3 预测从第 3 个月后开始（索引 3 对应月份 4）
-# - 增长率 growth[i] = (sales[i] - sales[i-1]) / sales[i-1] * 100
-# - MAE = mean(|预测值 - 实际值|)
-# - RMSE = sqrt(mean((预测值 - 实际值)^2))
-# - 输出中请包含 "Forecast" 或 "MAE" 字样
+months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+sales = [10000, 12000, 11500, 13500, 14000, 15000, 14500, 16000, 17500, 17000, 18500, 20000]
 
-# -------- 在这里编写你的代码 --------
+print("=== 历史销售数据 ===")
+for m, s in zip(months, sales):
+    print(f"{m}: \${s:,.0f}")
 
+# 3 个月移动平均预测：预测 i = 平均(sales[i-3:i])
+ma_predictions = [None, None]  # 前两个月无预测
+errors = []
+for i in range(2, len(sales)):
+    ma = (sales[i - 2] + sales[i - 1] + sales[i]) / 3  # 当前 MA3
+    if i + 1 < len(sales):
+        pred_next = ma
+        errors.append(pred_next - sales[i + 1])
+        ma_predictions.append(pred_next)
+    else:
+        ma_predictions.append(ma)
 
+print("\n--- 预测误差 (MA3 vs 实际下期) ---")
+for i, pred in enumerate(ma_predictions):
+    if pred is None:
+        continue
+    month_idx = i + 1  # 预测的是下期
+    if month_idx < len(sales):
+        print(f"预测 {months[month_idx]}: \${pred:,.0f} (实际 \${sales[month_idx]:,.0f}, 差 {pred - sales[month_idx]:+,.0f})")
 
+# 增长率
+recent_growths = [(sales[i] - sales[i - 1]) / sales[i - 1] for i in range(len(sales) - 3, len(sales))]
+avg_growth = sum(recent_growths) / len(recent_growths)
+pred_next_month_growth = sales[-1] * (1 + avg_growth)
+
+# MAE / RMSE
+mae = sum(abs(e) for e in errors) / len(errors)
+rmse = (sum(e * e for e in errors) / len(errors)) ** 0.5
+
+print(f"\n=== 预测评估指标 ===")
+print(f"MAE: \${mae:,.2f}")
+print(f"RMSE: \${rmse:,.2f}")
+print(f"最近 3 月平均环比增长率: {avg_growth * 100:+.2f}%")
+print(f"下一月增长法预测: \${pred_next_month_growth:,.0f}")
+last_ma = (sales[-3] + sales[-2] + sales[-1]) / 3
+print(f"下一月 MA3 预测: \${last_ma:,.0f}")
 `,
         expectedOutput: 'Forecast',
         hint: "解题思路：用列表存储 12 个月销售额，计算 3 个月移动平均作为预测值，再计算 MAE 和 RMSE 并打印预测报告。"
