@@ -119,12 +119,27 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
         await loadDataPackages(pyodideInstance)
       }
 
-      // Redirect stdout/stderr
+      // Redirect stdout/stderr and suppress noisy deprecation warnings
       pyodideInstance.runPython(`
-import sys, io
+import sys, io, warnings
+sys.stdout = io.StringIO()
+sys.stderr = io.StringIO()
+warnings.filterwarnings('ignore')
+`)
+
+      // Pre-import common packages to swallow initialization warnings (e.g., pyarrow)
+      if (needsDataPackages(code)) {
+        try {
+          await pyodideInstance.runPythonAsync('import pandas, numpy')
+        } catch {
+          // ignore; user code will surface real errors
+        }
+        // Reset captured buffers so the pre-import noise is not shown
+        pyodideInstance.runPython(`
 sys.stdout = io.StringIO()
 sys.stderr = io.StringIO()
 `)
+      }
 
       try {
         await pyodideInstance.runPythonAsync(code)
