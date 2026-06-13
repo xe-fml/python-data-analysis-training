@@ -21,7 +21,7 @@ const Home: React.FC = () => {
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 掌握数据分析，从
-                <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary-800 to-secondary-800 bg-clip-text text-transparent">
                   实战项目开始
                 </span>
               </h1>

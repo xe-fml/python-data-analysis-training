@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-lg">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <span className="text-xl font-bold bg-gradient-to-r from-primary-800 to-secondary-800 bg-clip-text text-transparent">
               Python数据分析
             </span>
           </Link>
