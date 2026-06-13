@@ -12,7 +12,7 @@ const InsightsCard: React.FC<InsightsCardProps> = ({
   title,
   content,
   icon,
-  color = 'from-primary to-secondary'
+  color = 'from-primary-700 to-secondary-700'
 }) => {
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">

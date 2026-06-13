@@ -64,7 +64,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, index }) => {
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all">
       <div className="p-5">
         <div className="flex items-start gap-4 mb-4">
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold">
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-primary-700 to-secondary-700 flex items-center justify-center text-white font-bold">
             {index + 1}
           </div>
           <div className="flex-1">

@@ -33,7 +33,7 @@ const Home: React.FC = () => {
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/project/shopping-cart"
-                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-700 to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
                 >
                   开始学习
                   <ArrowRight className="w-5 h-5" />
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 to="/project/shopping-cart"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-primary-700 to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 立即开始
                 <ArrowRight className="w-5 h-5" />

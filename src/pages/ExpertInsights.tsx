@@ -7,22 +7,22 @@ const ExpertInsights: React.FC = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <section className="bg-gradient-to-br from-primary to-secondary py-16 px-4">
+      <section className="bg-gradient-to-br from-blue-50 to-slate-100 py-16 px-4 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
-            <Link to="/" className="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+            <Link to="/" className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
               <ArrowLeft className="w-5 h-5" />
               <span>返回首页</span>
             </Link>
           </div>
           
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
               <Brain className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">专家洞察</h1>
-              <p className="text-white/90">深入理解数据分析的核心思维模式和争议话题</p>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">专家洞察</h1>
+              <p className="text-gray-700">深入理解数据分析的核心思维模式和争议话题</p>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@ const ExpertInsights: React.FC = () => {
                 className="bg-white rounded-xl p-8 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary-700 to-secondary-700 flex items-center justify-center">
                     <span className="text-white font-bold text-xl">{index + 1}</span>
                   </div>
                   <div>
@@ -152,7 +152,7 @@ const ExpertInsights: React.FC = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className="px-6 py-3 bg-gradient-to-r from-primary to-secondary text-white font-medium rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5"
+                className="px-6 py-3 bg-gradient-to-r from-primary-700 to-secondary-700 text-white font-medium rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5"
               >
                 {item.label}
               </Link>
