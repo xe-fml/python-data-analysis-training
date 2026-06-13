@@ -81,24 +81,28 @@ const PythonEditor: React.FC<PythonEditorProps> = ({
     })
   }, [])
 
-  // Load pandas & numpy on demand
+  // Load packages on demand
   const loadDataPackages = async (pyodide: any): Promise<void> => {
     if (packagesLoaded) return
-    setLoadingStage('正在加载 pandas / numpy…')
+    setLoadingStage('正在加载 pandas / numpy / scipy / scikit-learn…')
     try {
-      await pyodide.loadPackage(['pandas', 'numpy'])
+      await pyodide.loadPackage(['pandas', 'numpy', 'scipy', 'scikit-learn'])
       setPackagesLoaded(true)
     } catch (e: any) {
-      // 非致命：给出提示，继续运行
-      setOutput((prev) => prev + '\n⚠️ 警告: pandas/numpy 加载失败，将回退到标准库模式。\n')
+      setOutput((prev) => prev + '\n⚠️ 警告: 数据处理库加载失败，将回退到标准库模式。\n')
     } finally {
       setLoadingStage('')
     }
   }
 
-  // Heuristic: does the code need pandas/numpy?
+  // Heuristic: does the code need data processing packages?
   const needsDataPackages = (src: string): boolean => {
-    const keywords = ['import pandas', 'import numpy', 'from pandas', 'from numpy', 'import matplotlib', 'from matplotlib', 'import sklearn', 'from sklearn']
+    const keywords = [
+      'import pandas', 'import numpy', 'import scipy',
+      'import sklearn', 'import matplotlib', 'import seaborn',
+      'from pandas', 'from numpy', 'from scipy',
+      'from sklearn', 'from matplotlib', 'from seaborn'
+    ]
     return keywords.some((k) => src.includes(k))
   }
 
@@ -130,7 +134,7 @@ warnings.filterwarnings('ignore')
       // Pre-import common packages to swallow initialization warnings (e.g., pyarrow)
       if (needsDataPackages(code)) {
         try {
-          await pyodideInstance.runPythonAsync('import pandas, numpy')
+          await pyodideInstance.runPythonAsync('import pandas, numpy, scipy, sklearn')
         } catch {
           // ignore; user code will surface real errors
         }
@@ -211,7 +215,7 @@ print(traceback.format_exc(), file=sys.stdout)
           <span className="text-gray-300 text-sm font-medium ml-2">Python 3.11</span>
           <span className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-700/60 rounded-md px-2 py-0.5">
             <Package className="w-3 h-3" />
-            pandas / numpy 可按需加载
+            pandas / numpy / scipy / scikit-learn 可按需加载
           </span>
           {isLoading && loadingStage && (
             <span className="text-yellow-400 text-xs ml-2 animate-pulse">
